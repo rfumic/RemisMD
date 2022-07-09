@@ -1,10 +1,12 @@
 'use strict';
 
-import { app, protocol, BrowserWindow } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
+const path = require('path');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
+// const ipc = ipcMain;
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
@@ -13,18 +15,40 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    frame: true,
-    autoHideMenuBar: false,
+    width: 640,
+    height: 720,
+    minWidth: 640,
+    minHeight: 720,
+    frame: false,
+    autoHideMenuBar: true,
+    backgroundColor: '#141519',
+
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
+      preload: path.resolve(__static, 'preload.js'),
     },
   });
+  ipcMain.on('closeApp', () => {
+    console.log('closing app');
+    win.close();
+  });
 
+  ipcMain.on('minimizeApp', () => {
+    console.log('minimizing app');
+    win.minimize();
+  });
+
+  ipcMain.on('maximizeApp', () => {
+    console.log('maxzimizing app');
+    if (win.isMaximized()) {
+      win.restore();
+    } else {
+      win.maximize();
+    }
+  });
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
@@ -63,6 +87,7 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString());
     }
   }
+
   createWindow();
 });
 
