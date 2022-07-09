@@ -14,6 +14,7 @@ import TextArea from '@/components/TextArea.vue';
 @use '@/scss/colors.scss' as *;
 main {
   color: $c-foreground;
+  background-color: $c-editor;
   padding: 5%;
   * {
     margin-top: 1%;

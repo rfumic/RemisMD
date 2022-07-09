@@ -1,10 +1,11 @@
 <template>
-  <h1>{{ title }}</h1>
+  <TabContainer />
   <EditorComponent />
 </template>
 
 <script setup>
 import EditorComponent from '@/components/EditorComponent.vue';
+import TabContainer from '@/components/TabContainer.vue';
 const title = 'Markdown Editor';
 </script>
 <style lang="scss" scoped>
