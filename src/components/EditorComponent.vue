@@ -4,11 +4,20 @@
     <h2>heading2</h2>
     <TextArea />
     <div class="newLine">+</div>
+    <div v-for="(line, index) in fileContent" :key="index">
+      {{ line }}
+    </div>
   </main>
 </template>
 
 <script setup>
 import TextArea from '@/components/TextArea.vue';
+import { computed } from '@vue/reactivity';
+const props = defineProps(['file']);
+
+const fileContent = computed(() => props.file.content.split(/\r?\n/));
+
+console.log(props.file.content);
 </script>
 <style lang="scss" scoped>
 @use '@/scss/colors.scss' as *;

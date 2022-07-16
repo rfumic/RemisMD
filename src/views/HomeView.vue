@@ -7,7 +7,7 @@
     @closeTab="closeTab"
     @setCurrentTab="setCurrentTab"
   />
-  <editor-component v-if="showEditor" />
+  <editor-component v-if="showEditor" :file="currentTab" />
   <default-screen @open-file="handleOpenFile" />
 </template>
 
