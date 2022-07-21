@@ -12,6 +12,9 @@
 </template>
 
 <script setup>
+import { marked } from 'marked';
+import TurndownService from 'turndown';
+
 import DefaultScreen from '@/components/DefaultScreen.vue';
 import EditorComponent from '@/components/EditorComponent.vue';
 import TabContainer from '@/components/TabContainer.vue';
@@ -58,7 +61,7 @@ async function handleOpenFile() {
     files.value.push({
       id: Date.now(),
       name: fileData.name,
-      content,
+      content: parseFile(content),
     });
     console.log(files.value[0]);
     currentTab.value = files.value[files.value.length - 1];
@@ -67,6 +70,17 @@ async function handleOpenFile() {
       console.error(error);
     }
   }
+}
+
+function parseFile(fileContent) {
+  const td = new TurndownService({
+    headingStyle: 'atx',
+    codeBlockStyle: 'fenced',
+  });
+  const initialHtml = marked.parse(fileContent);
+
+  const doc = new DOMParser().parseFromString(initialHtml, 'text/html');
+  return [...doc.body.children].map((child) => td.turndown(child.outerHTML));
 }
 </script>
 <style lang="scss" scoped>

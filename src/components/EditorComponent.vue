@@ -1,11 +1,11 @@
 <template>
   <main>
-    <h1>heading1</h1>
+    <!-- <h1>heading1</h1>
     <h2>heading2</h2>
-    <TextArea />
-    <div class="newLine">+</div>
-    <div v-for="(line, index) in fileContent" :key="index">
-      {{ line }}
+    <div class="newLine">+</div> -->
+    <div v-for="(line, index) in props.file.content" :key="index">
+      <!-- {{ line }} -->
+      <TextArea :line="line" />
     </div>
   </main>
 </template>
@@ -15,10 +15,11 @@ import TextArea from '@/components/TextArea.vue';
 import { computed } from '@vue/reactivity';
 const props = defineProps(['file']);
 
-const fileContent = computed(() => props.file.content.split(/\r?\n/));
+// const fileContent = computed(() => props.file.content.split(/\r?\n/));
 
 console.log(props.file.content);
 </script>
+
 <style lang="scss" scoped>
 @use '@/scss/colors.scss' as *;
 main {
