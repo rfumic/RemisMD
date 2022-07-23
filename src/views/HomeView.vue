@@ -7,7 +7,7 @@
     @closeTab="closeTab"
     @setCurrentTab="setCurrentTab"
   />
-  <editor-component v-if="showEditor" :file="currentTab" />
+  <editor-component v-if="showEditor" :file="currentTab" :reset="resetEditor" />
   <default-screen @open-file="handleOpenFile" />
 </template>
 
@@ -20,7 +20,7 @@ import EditorComponent from '@/components/EditorComponent.vue';
 import TabContainer from '@/components/TabContainer.vue';
 import MenuBar from '@/components/MenuBar.vue';
 
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 const showEditor = computed(() => files.value.length !== 0);
 const currentTab = ref({ name: 'Open a file' });
 const files = ref([
@@ -29,7 +29,13 @@ const files = ref([
   // { id: 3, title: 'File3.md' },
   // { id: 4, title: 'File4.md' },
 ]);
+const resetEditor = ref(false);
 let fileHandle;
+
+watch(currentTab, (x, y) => {
+  console.log('HERE:', x);
+  resetEditor.value = !resetEditor.value;
+});
 
 function setCurrentTab(tabId) {
   currentTab.value = files.value.find((file) => file.id === tabId);
@@ -63,7 +69,7 @@ async function handleOpenFile() {
       name: fileData.name,
       content: parseFile(content),
     });
-    console.log(files.value[0]);
+    console.log(files.value[files.value.length - 1]);
     currentTab.value = files.value[files.value.length - 1];
   } catch (error) {
     if (error.name !== 'AbortError') {

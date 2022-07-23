@@ -5,23 +5,28 @@
     cols="30"
     :rows="rowNumber"
     autocomplete="off"
-    ref="controlTextArea"
+    :ref="controlTextArea"
     wrap="hard"
   ></textarea>
-  <div v-else v-html="renderLine" @click="editMode = true" class="render"></div>
+  <div
+    v-else
+    v-html="renderLine"
+    @click="$emit('selectLine')"
+    class="render"
+  ></div>
 </template>
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { marked } from 'marked';
-const props = defineProps(['line']);
+const props = defineProps(['line', 'isSelected']);
 
 const renderLine = computed(() => marked.parse(lineValue.value));
 const rowNumber = computed(() => lineValue.value.split(/\r\n|\r|\n/).length);
-let lineValue = ref(props.line);
+let lineValue = computed(() => props.line);
 
 let textArea = ref('');
 let controlTextArea = ref(null);
-let editMode = ref(false);
+let editMode = computed(() => props.isSelected);
 
 function resizeTextArea() {
   controlTextArea.value.style.height = '5px';
@@ -48,6 +53,9 @@ textarea {
   ul,
   ol {
     margin-left: 50px;
+  }
+  &:hover {
+    background-color: $c-background;
   }
 }
 </style>

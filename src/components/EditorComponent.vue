@@ -1,23 +1,48 @@
 <template>
   <main>
     <!-- <h1>heading1</h1>
-    <h2>heading2</h2>
-    <div class="newLine">+</div> -->
-    <div v-for="(line, index) in props.file.content" :key="index">
+    <h2>heading2</h2> -->
+    <div v-for="(line, index) in fileContent" :key="index">
       <!-- {{ line }} -->
-      <TextArea :line="line" />
+      <TextArea
+        :line="line"
+        :isSelected="selectedLine === index"
+        @selectLine="selectedLine = index"
+      />
     </div>
+    <div class="newLine">+</div>
   </main>
 </template>
 
 <script setup>
 import TextArea from '@/components/TextArea.vue';
-import { computed } from '@vue/reactivity';
-const props = defineProps(['file']);
+import { ref, computed, watch } from 'vue';
+const props = defineProps(['file', 'reset']);
+const selectedLine = ref(null);
+const fileContent = computed(() => props.file.content);
+window.addEventListener('keyup', (key) => {
+  console.log(key);
+  if (key.key === 'Escape') {
+    selectedLine.value = null;
+  } else if (key.key === 'ArrowDown' && key.ctrlKey) {
+    selectedLine.value += 1;
+  } else if (key.key === 'ArrowUp' && key.ctrlKey) {
+    selectedLine.value -= 1;
+  } else if (key.key === 'ArrowRight' && selectedLine.value === null) {
+    selectedLine.value = 0;
+  }
+});
+
+watch(
+  () => props.reset,
+  () => {
+    selectedLine.value = null;
+  }
+);
 
 // const fileContent = computed(() => props.file.content.split(/\r?\n/));
 
-console.log(props.file.content);
+// console.log(props.file.content);
 </script>
 
 <style lang="scss" scoped>
@@ -59,7 +84,7 @@ main {
   color: $c-text-area-border;
   font-size: 3em;
   padding: 0.5rem;
-  width: 25%;
+  width: 250px;
   display: flex;
   align-items: center;
   justify-content: center;
