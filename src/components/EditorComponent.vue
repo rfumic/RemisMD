@@ -8,9 +8,13 @@
         :line="line"
         :isSelected="selectedLine === index"
         @selectLine="selectedLine = index"
+        @addLineAbove="addLine(index)"
+        @addLineBelow="addLine(index + 1)"
+        @deselectLine="selectedLine = null"
+        @removeLine="removeLine(index)"
       />
     </div>
-    <div class="newLine">+</div>
+    <div class="newLine" @click="addLine(null)">+</div>
   </main>
 </template>
 
@@ -19,7 +23,7 @@ import TextArea from '@/components/TextArea.vue';
 import { ref, computed, watch } from 'vue';
 const props = defineProps(['file', 'reset']);
 const selectedLine = ref(null);
-const fileContent = computed(() => props.file.content);
+const fileContent = ref(props.file.content);
 window.addEventListener('keyup', (key) => {
   console.log(key);
   if (key.key === 'Escape') {
@@ -30,6 +34,18 @@ window.addEventListener('keyup', (key) => {
     selectedLine.value -= 1;
   } else if (key.key === 'ArrowRight' && selectedLine.value === null) {
     selectedLine.value = 0;
+  } else if (key.key === 'Delete' && key.ctrlKey && key.shiftKey) {
+    removeLine(selectedLine.value);
+  } else if (
+    key.key === 'Enter' &&
+    key.ctrlKey &&
+    selectedLine.value !== null
+  ) {
+    if (key.shiftKey) {
+      addLine(selectedLine.value);
+    } else {
+      addLine(selectedLine.value + 1);
+    }
   }
 });
 
@@ -39,6 +55,21 @@ watch(
     selectedLine.value = null;
   }
 );
+
+function addLine(index = null) {
+  if (index === null) {
+    fileContent.value.push('');
+    selectedLine.value = fileContent.value.length - 1;
+  } else {
+    fileContent.value.splice(index, 0, '');
+    selectedLine.value = index;
+  }
+}
+
+function removeLine(index) {
+  fileContent.value.splice(index, 1);
+  selectedLine.value = null;
+}
 
 // const fileContent = computed(() => props.file.content.split(/\r?\n/));
 
