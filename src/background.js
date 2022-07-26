@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain, shell } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
 const path = require('path');
@@ -31,6 +31,14 @@ async function createWindow() {
       preload: path.resolve(__static, 'preload.js'),
     },
   });
+
+  win.webContents.on('will-navigate', (event, url) => {
+    // stop Electron from opening another BrowserWindow
+    event.preventDefault();
+    // open the url in the default system browser
+    shell.openExternal(url);
+  });
+
   ipcMain.on('closeApp', () => {
     console.log('closing app');
     win.close();
@@ -90,7 +98,7 @@ app.on('ready', async () => {
 
   createWindow();
 });
-
+app.commandLine.appendSwitch('enable-experimental-web-platform-features');
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
   if (process.platform === 'win32') {

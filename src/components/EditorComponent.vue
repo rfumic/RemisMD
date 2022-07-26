@@ -6,6 +6,7 @@
       <!-- {{ line }} -->
       <TextArea
         :line="line"
+        v-model="fileContent[index]"
         :isSelected="selectedLine === index"
         @selectLine="selectedLine = index"
         @addLineAbove="addLine(index)"
@@ -21,11 +22,15 @@
 <script setup>
 import TextArea from '@/components/TextArea.vue';
 import { ref, computed, watch } from 'vue';
+import { useStore } from 'vuex';
 const props = defineProps(['file', 'reset']);
 const selectedLine = ref(null);
 const fileContent = ref(props.file.content);
+const store = useStore();
+
 window.addEventListener('keyup', (key) => {
   console.log(key);
+  console.log(fileContent.value);
   if (key.key === 'Escape') {
     selectedLine.value = null;
   } else if (key.key === 'ArrowDown' && key.ctrlKey) {
@@ -55,6 +60,20 @@ watch(
     selectedLine.value = null;
   }
 );
+
+watch(
+  () => props.file,
+  () => {
+    fileContent.value = store.getters.getFile(props.file.id).content;
+  }
+);
+
+watch(fileContent, () => {
+  store.commit('updateFileContent', {
+    ...props.file,
+    content: fileContent.value,
+  });
+});
 
 function addLine(index = null) {
   if (index === null) {

@@ -4,8 +4,9 @@
       v-model="lineValue"
       cols="30"
       :rows="rowNumber"
-      autocomplete="off"
       :ref="controlTextArea"
+      @input="$emit('update:modelValue', $event.target.value)"
+      autocomplete="off"
       wrap="hard"
     ></textarea>
     <div class="textAreaControl">
@@ -99,7 +100,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
 import { marked } from 'marked';
-const props = defineProps(['line', 'isSelected']);
+const props = defineProps(['line', 'isSelected', 'modelValue']);
 
 const renderLine = computed(() => marked.parse(lineValue.value));
 const rowNumber = computed(() => lineValue.value.split(/\r\n|\r|\n/).length);

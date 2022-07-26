@@ -1,5 +1,9 @@
 <template>
-  <menu-bar @openFile="handleOpenFile" :windowTitle="currentTab.name" />
+  <menu-bar
+    @openFile="handleOpenFile"
+    @saveFile="handleSaveFile"
+    :windowTitle="currentTab.name"
+  />
 
   <tab-container
     :tabs="files"
@@ -12,6 +16,8 @@
 </template>
 
 <script setup>
+import { ref, computed, watch } from 'vue';
+import { useStore } from 'vuex';
 import { marked } from 'marked';
 import TurndownService from 'turndown';
 
@@ -20,7 +26,8 @@ import EditorComponent from '@/components/EditorComponent.vue';
 import TabContainer from '@/components/TabContainer.vue';
 import MenuBar from '@/components/MenuBar.vue';
 
-import { ref, computed, watch } from 'vue';
+const store = useStore();
+
 const showEditor = computed(() => files.value.length !== 0);
 const currentTab = ref({ name: 'Open a file' });
 const files = ref([
@@ -39,6 +46,7 @@ watch(currentTab, (x, y) => {
 
 function setCurrentTab(tabId) {
   currentTab.value = files.value.find((file) => file.id === tabId);
+  console.log('this is the tab id:', tabId);
 }
 
 function closeTab(payload) {
@@ -64,11 +72,14 @@ async function handleOpenFile() {
     });
     let fileData = await fileHandle.getFile();
     let content = await fileData.text();
-    files.value.push({
+    let data = {
       id: Date.now(),
       name: fileData.name,
       content: parseFile(content),
-    });
+      fileHandle,
+    };
+    files.value.push(data);
+    store.commit('addFile', data);
     console.log(files.value[files.value.length - 1]);
     currentTab.value = files.value[files.value.length - 1];
   } catch (error) {
@@ -76,6 +87,39 @@ async function handleOpenFile() {
       console.error(error);
     }
   }
+}
+
+async function handleSaveFile() {
+  console.log('it calls');
+  try {
+    const file = store.getters.getFile(currentTab.value.id);
+    await file.fileHandle.requestPermission();
+    let stream = await file.fileHandle.createWritable();
+    await stream.write({ data: file.content.join('\r\n\n'), type: 'write' });
+    await stream.close();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function verifyPermission(fileHandle, withWrite) {
+  const opts = {};
+  if (withWrite) {
+    opts.mode = 'readwrite';
+  }
+
+  // Check if we already have permission, if so, return true.
+  if ((await fileHandle.queryPermission(opts)) === 'granted') {
+    return true;
+  }
+
+  // Request permission to the file, if the user grants permission, return true.
+  if ((await fileHandle.requestPermission(opts)) === 'granted') {
+    return true;
+  }
+
+  // The user did not grant permission, return false.
+  return false;
 }
 
 function parseFile(fileContent) {
