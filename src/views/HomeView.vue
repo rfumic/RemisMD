@@ -2,6 +2,7 @@
   <menu-bar
     @openFile="handleOpenFile"
     @saveFile="handleSaveFile"
+    @newFile="handleNewFile"
     :windowTitle="currentTab.name"
   />
 
@@ -11,8 +12,13 @@
     @closeTab="closeTab"
     @setCurrentTab="setCurrentTab"
   />
-  <editor-component v-if="showEditor" :file="currentTab" :reset="resetEditor" />
-  <default-screen @open-file="handleOpenFile" />
+  <editor-component
+    v-if="showEditor"
+    :file="currentTab"
+    :reset="resetEditor"
+    @save-file="handleSaveFile"
+  />
+  <default-screen @open-file="handleOpenFile" @new-file="handleNewFile" />
 </template>
 
 <script setup>
@@ -90,7 +96,6 @@ async function handleOpenFile() {
 }
 
 async function handleSaveFile() {
-  console.log('it calls');
   try {
     const file = store.getters.getFile(currentTab.value.id);
     await file.fileHandle.requestPermission();
@@ -99,6 +104,40 @@ async function handleSaveFile() {
     await stream.close();
   } catch (error) {
     console.error(error);
+  }
+}
+
+async function handleNewFile() {
+  try {
+    fileHandle = await window.showSaveFilePicker({
+      types: [
+        {
+          description: 'Markdown',
+          accept: {
+            'markdown/*': ['.MD', '.markdown'],
+          },
+        },
+      ],
+      excludeAcceptAllOption: true,
+    });
+    let fileData = await fileHandle.getFile();
+    let data = {
+      id: Date.now(),
+      name: fileData.name,
+      content: [],
+      fileHandle,
+    };
+
+    files.value.push(data);
+    store.commit('addFile', data);
+    currentTab.value = files.value[files.value.length - 1];
+    let stream = await fileHandle.createWritable();
+    await stream.write({ data: '', type: 'write' });
+    await stream.close();
+  } catch (error) {
+    if (error.name !== 'AbortError') {
+      console.error(error);
+    }
   }
 }
 

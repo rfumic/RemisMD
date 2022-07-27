@@ -14,6 +14,7 @@
           stroke-linecap="round"
           stroke-linejoin="round"
           class="feather feather-file-plus"
+          @click="$emit('newFile')"
         >
           <path
             d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
@@ -77,6 +78,7 @@
           stroke-linecap="round"
           stroke-linejoin="round"
           class="feather feather-corner-up-left"
+          @click="handleControl('undo')"
         >
           <polyline points="9 14 4 9 9 4"></polyline>
           <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
@@ -94,6 +96,7 @@
           stroke-linecap="round"
           stroke-linejoin="round"
           class="feather feather-corner-up-right"
+          @click="handleControl('redo')"
         >
           <polyline points="15 14 20 9 15 4"></polyline>
           <path d="M4 20v-7a4 4 0 0 1 4-4h12"></path>
@@ -111,6 +114,7 @@
           stroke-linecap="round"
           stroke-linejoin="round"
           class="feather feather-zoom-in"
+          @click="handleControl('zoomIn')"
         >
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -130,6 +134,7 @@
           stroke-linecap="round"
           stroke-linejoin="round"
           class="feather feather-zoom-out"
+          @click="handleControl('zoomOut')"
         >
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -208,6 +213,19 @@ function handleControl(control) {
       break;
     case 'maximize':
       window.electronAPI.maximizeApp();
+      break;
+
+    case 'zoomIn':
+      window.electronAPI.zoomIn();
+      break;
+    case 'zoomOut':
+      window.electronAPI.zoomOut();
+      break;
+    case 'undo':
+      window.electronAPI.undo();
+      break;
+    case 'redo':
+      window.electronAPI.redo();
       break;
   }
 }

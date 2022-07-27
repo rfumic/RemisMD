@@ -24,15 +24,17 @@ import TextArea from '@/components/TextArea.vue';
 import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 const props = defineProps(['file', 'reset']);
+const emit = defineEmits(['saveFile', 'saveAs']);
 const selectedLine = ref(null);
 const fileContent = ref(props.file.content);
 const store = useStore();
 
 window.addEventListener('keyup', (key) => {
   console.log(key);
-  console.log(fileContent.value);
   if (key.key === 'Escape') {
     selectedLine.value = null;
+  } else if ((key.key === 's' || key.key === 'S') && key.ctrlKey) {
+    emit('saveFile');
   } else if (key.key === 'ArrowDown' && key.ctrlKey) {
     selectedLine.value += 1;
   } else if (key.key === 'ArrowUp' && key.ctrlKey) {

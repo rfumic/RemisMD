@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="box">
+    <div class="box" @click="$emit('newFile')">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
