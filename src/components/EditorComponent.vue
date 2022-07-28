@@ -1,9 +1,6 @@
 <template>
   <main>
-    <!-- <h1>heading1</h1>
-    <h2>heading2</h2> -->
     <div v-for="(line, index) in fileContent" :key="index">
-      <!-- {{ line }} -->
       <TextArea
         :line="line"
         v-model="fileContent[index]"
@@ -105,8 +102,8 @@ main {
   padding: 5%;
   height: 100%;
   * {
-    margin-top: 1%;
-    margin-bottom: 1%;
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
   // overflow-x: hidden;
   overflow: scroll;

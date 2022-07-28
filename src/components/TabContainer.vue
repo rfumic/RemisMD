@@ -11,7 +11,12 @@
         @click="$emit('setCurrentTab', tab.id)"
       >
         {{ tab.name }}
+        <div
+          class="loading"
+          v-if="props.saving && tab.id == props.currentTab"
+        ></div>
         <svg
+          v-if="!props.saving"
           viewBox="0 0 24 24"
           width="23"
           height="23"
@@ -36,6 +41,7 @@ import { ref, toRefs } from 'vue';
 const props = defineProps({
   tabs: Array,
   currentTab: Number,
+  saving: Boolean,
 });
 // const { tabs } = toRefs(props);
 </script>
@@ -88,6 +94,28 @@ const props = defineProps({
   &:hover {
     background-color: $c-text-area-border;
     color: $c-tab-title-inactive;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  margin-left: 15px;
+
+  &::after {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border: 5px solid $c-tab-title-active;
+    border-top-color: $c-background;
+    border-radius: 50%;
+    animation: loading 1s linear infinite;
+  }
+}
+
+@keyframes loading {
+  to {
+    transform: rotate(1turn);
   }
 }
 </style>

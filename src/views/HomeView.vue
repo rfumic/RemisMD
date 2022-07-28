@@ -9,6 +9,7 @@
   <tab-container
     :tabs="files"
     :currentTab="currentTab.id"
+    :saving="saving"
     @closeTab="closeTab"
     @setCurrentTab="setCurrentTab"
   />
@@ -33,7 +34,7 @@ import TabContainer from '@/components/TabContainer.vue';
 import MenuBar from '@/components/MenuBar.vue';
 
 const store = useStore();
-
+const saving = ref(false);
 const showEditor = computed(() => files.value.length !== 0);
 const currentTab = ref({ name: 'Open a file' });
 const files = ref([
@@ -57,6 +58,7 @@ function setCurrentTab(tabId) {
 
 function closeTab(payload) {
   files.value = files.value.filter((file) => file.id !== payload);
+  store.commit('removeFile', { id: payload });
   currentTab.value = files.value[files.value.length - 1] || {
     name: 'Open a file',
   };
@@ -97,11 +99,13 @@ async function handleOpenFile() {
 
 async function handleSaveFile() {
   try {
+    saving.value = true;
     const file = store.getters.getFile(currentTab.value.id);
     await file.fileHandle.requestPermission();
     let stream = await file.fileHandle.createWritable();
     await stream.write({ data: file.content.join('\r\n\n'), type: 'write' });
     await stream.close();
+    saving.value = false;
   } catch (error) {
     console.error(error);
   }
