@@ -162,4 +162,28 @@ textarea {
     background-color: $c-background;
   }
 }
+pre {
+  background-color: $c-background;
+  padding: 4px;
+  width: 50%;
+}
+
+code {
+  font-family: 'Roboto Mono', monospace;
+  background-color: $c-background;
+}
+
+blockquote {
+  margin: 8px;
+  padding: 8px;
+  border-left: 4px solid $c-highlight;
+  &:hover {
+    border-color: $c-tab-title-active;
+  }
+}
+
+a {
+  color: $c-highlight;
+  font-weight: bolder;
+}
 </style>

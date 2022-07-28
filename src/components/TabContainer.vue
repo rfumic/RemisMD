@@ -51,6 +51,7 @@ const props = defineProps({
 .main {
   display: flex;
   flex-direction: row;
+  font-size: 16px;
 }
 .tabContainer {
   background-color: $c-background;

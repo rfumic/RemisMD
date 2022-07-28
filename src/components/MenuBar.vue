@@ -216,7 +216,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 let openFile = ref({});
 const props = defineProps(['windowTitle']);
 
@@ -268,6 +268,13 @@ async function handleFileUpload() {
   console.log(openFile.value.name);
   console.log(fileData);
 }
+
+watch(
+  () => props.windowTitle,
+  () => {
+    window.document.title = props.windowTitle || '';
+  }
+);
 </script>
 
 <style lang="scss" scoped>

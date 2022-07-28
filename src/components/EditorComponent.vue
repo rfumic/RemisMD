@@ -99,7 +99,8 @@ function removeLine(index) {
 main {
   color: $c-foreground;
   background-color: $c-editor;
-  padding: 5%;
+  padding: 32px;
+  padding-bottom: 100px;
   height: 100%;
   * {
     margin-top: 10px;
@@ -108,7 +109,7 @@ main {
   // overflow-x: hidden;
   overflow: scroll;
   &::-webkit-scrollbar {
-    width: 2vw;
+    width: 24px;
   }
   &::-webkit-scrollbar-track {
     background-color: $c-background;
