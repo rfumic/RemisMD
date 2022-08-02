@@ -18,6 +18,7 @@
     :file="currentTab"
     :reset="resetEditor"
     @save-file="handleSaveFile"
+    @changeUnsaved="changeUnsaved"
   />
   <default-screen @open-file="handleOpenFile" @new-file="handleNewFile" />
 </template>
@@ -50,6 +51,18 @@ watch(currentTab, (x, y) => {
   console.log('HERE:', x);
   resetEditor.value = !resetEditor.value;
 });
+
+function changeUnsaved(id, value) {
+  console.log('itran', id, value);
+  files.value = files.value.map((file) => {
+    if (file.id === id) {
+      return {
+        ...file,
+        unsaved: value,
+      };
+    }
+  });
+}
 
 function setCurrentTab(tabId) {
   currentTab.value = files.value.find((file) => file.id === tabId);
@@ -85,6 +98,7 @@ async function handleOpenFile() {
       name: fileData.name,
       content: parseFile(content),
       fileHandle,
+      unsaved: false,
     };
     files.value.push(data);
     store.commit('addFile', data);
@@ -99,6 +113,7 @@ async function handleOpenFile() {
 
 async function handleSaveFile() {
   try {
+    changeUnsaved(currentTab.value.id, false);
     saving.value = true;
     const file = store.getters.getFile(currentTab.value.id);
     await file.fileHandle.requestPermission();
@@ -130,6 +145,7 @@ async function handleNewFile() {
       name: fileData.name,
       content: [],
       fileHandle,
+      unsaved: true,
     };
 
     files.value.push(data);

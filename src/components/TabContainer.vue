@@ -15,6 +15,7 @@
           class="loading"
           v-if="props.saving && tab.id == props.currentTab"
         ></div>
+        <div class="unsaved" v-if="!props.saving && tab.unsaved"></div>
         <svg
           v-if="!props.saving"
           viewBox="0 0 24 24"
@@ -38,11 +39,7 @@
 </template>
 <script setup>
 import { ref, toRefs } from 'vue';
-const props = defineProps({
-  tabs: Array,
-  currentTab: Number,
-  saving: Boolean,
-});
+const props = defineProps(['tabs', 'currentTab', 'saving']);
 // const { tabs } = toRefs(props);
 </script>
 <style lang="scss" scoped>
@@ -96,6 +93,17 @@ const props = defineProps({
     background-color: $c-text-area-border;
     color: $c-tab-title-inactive;
   }
+}
+
+.unsaved {
+  display: flex;
+  justify-content: center;
+  margin-left: 5px;
+  content: '';
+  width: 5px;
+  height: 5px;
+  border: 5px solid $c-foreground;
+  border-radius: 50%;
 }
 
 .loading {

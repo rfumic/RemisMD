@@ -287,7 +287,7 @@ watch(
   min-width: 100%;
   max-width: 100%;
   line-height: 40px;
-  padding-top: 5px;
+  padding-top: 15px;
   align-items: center;
   justify-content: space-between;
   color: $c-tab-title-inactive;

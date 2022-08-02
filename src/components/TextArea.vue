@@ -160,12 +160,13 @@ textarea {
   }
   &:hover {
     background-color: $c-background;
+    transition: 60ms ease-in-out;
   }
 }
 pre {
   background-color: $c-background;
   padding: 4px;
-  width: 50%;
+  width: fit-content;
 }
 
 code {

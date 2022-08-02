@@ -21,7 +21,7 @@ import TextArea from '@/components/TextArea.vue';
 import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 const props = defineProps(['file', 'reset']);
-const emit = defineEmits(['saveFile', 'saveAs']);
+const emit = defineEmits(['saveFile', 'saveAs', 'changeUnsaved']);
 const selectedLine = ref(null);
 const fileContent = ref(props.file.content);
 const store = useStore();
@@ -67,11 +67,13 @@ watch(
   }
 );
 
-watch(fileContent, () => {
+watch(fileContent.value, () => {
+  console.log('preemit');
   store.commit('updateFileContent', {
     ...props.file,
     content: fileContent.value,
   });
+  emit('changeUnsaved', props.file.id, true);
 });
 
 function addLine(index = null) {
