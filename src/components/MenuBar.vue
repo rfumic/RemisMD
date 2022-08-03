@@ -299,6 +299,9 @@ watch(
   .windowControls {
     // flex: 1;
     // flex: 1 0 0;
+    flex: 1;
+    // display: flex;
+    // justify-content: center;
   }
 }
 .menu {
@@ -309,7 +312,8 @@ watch(
   overflow: hidden;
 
   // background-color: green;
-  justify-content: space-between;
+  // justify-content: space-between;
+  margin-right: auto;
 }
 
 .menu-item {
@@ -326,18 +330,21 @@ watch(
 
 .title {
   // margin: 0 auto;
-
+  height: 40px;
   // background-color: red;
-  display: flex;
+  // display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .windowControls {
   // background-color: blue;
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  margin-left: auto;
   div {
     -webkit-app-region: no-drag;
     svg {
