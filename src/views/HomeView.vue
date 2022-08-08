@@ -3,6 +3,7 @@
     @openFile="handleOpenFile"
     @saveFile="handleSaveFile"
     @newFile="handleNewFile"
+    @settings="showModal = true"
     :windowTitle="currentTab.name"
   />
 
@@ -21,6 +22,9 @@
     @changeUnsaved="changeUnsaved"
   />
   <default-screen @open-file="handleOpenFile" @new-file="handleNewFile" />
+  <Teleport to="#modal">
+    <settings v-if="showModal" @closeModal="showModal = false" />
+  </Teleport>
 </template>
 
 <script setup>
@@ -33,11 +37,13 @@ import DefaultScreen from '@/components/DefaultScreen.vue';
 import EditorComponent from '@/components/EditorComponent.vue';
 import TabContainer from '@/components/TabContainer.vue';
 import MenuBar from '@/components/MenuBar.vue';
+import Settings from '@/components/SettingsComponent.vue';
 
 const store = useStore();
 const saving = ref(false);
 const showEditor = computed(() => files.value.length !== 0);
 const currentTab = ref({ name: 'Open a file' });
+const showModal = ref(false);
 const files = ref([
   // { id: 1, title: 'File1sdfsdf.md' },
   // { id: 2, title: 'File2.md' },

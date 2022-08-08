@@ -153,6 +153,7 @@
           stroke-linecap="round"
           stroke-linejoin="round"
           class="feather feather-settings"
+          @click="$emit('settings')"
         >
           <circle cx="12" cy="12" r="3"></circle>
           <path
