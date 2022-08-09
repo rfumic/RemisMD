@@ -10,6 +10,7 @@ import {
 } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
+import { getTheme, getAllThemes, getCurrentTheme } from '@/settings';
 const path = require('path');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -78,6 +79,10 @@ async function createWindow() {
 
   ipcMain.on('redo', () => {
     win.webContents.redo();
+  });
+
+  ipcMain.handle('getCurrentTheme', () => {
+    return getCurrentTheme();
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

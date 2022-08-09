@@ -8,4 +8,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   zoomOut: () => ipcRenderer.send('zoomOut'),
   undo: () => ipcRenderer.send('undo'),
   redo: () => ipcRenderer.send('redo'),
+  getCurrentTheme: () => ipcRenderer.invoke('getCurrentTheme'),
 });
