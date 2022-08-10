@@ -23,7 +23,11 @@
   />
   <default-screen @open-file="handleOpenFile" @new-file="handleNewFile" />
   <Teleport to="#modal">
-    <settings v-if="showModal" @closeModal="showModal = false" />
+    <settings
+      v-if="showModal"
+      @closeModal="showModal = false"
+      @setCurrentTheme="setCurrentTheme"
+    />
   </Teleport>
 </template>
 
@@ -53,9 +57,38 @@ const files = ref([
 const resetEditor = ref(false);
 let fileHandle;
 
+function setTheme(theme) {
+  const root = document.querySelector(':root');
+  root.style.setProperty('--background', theme.background);
+  root.style.setProperty('--editor', theme.editor);
+  root.style.setProperty('--foreground', theme.foreground);
+  root.style.setProperty('--highlight', theme.highlight);
+  root.style.setProperty('--textActive', theme.textActive);
+  root.style.setProperty('--textArea', theme.textArea);
+  root.style.setProperty('--textAreaBorder', theme.textAreaBorder);
+  root.style.setProperty('--textInactive', theme.textInactive);
+}
+(async () => {
+  let currentTheme = await window.electronAPI.getCurrentTheme();
+  setTheme(currentTheme);
+  console.log('hi from APP.VUE', currentTheme);
+})();
+
+function setCurrentTheme([theme, name]) {
+  console.log('hello from homeview.vue', name);
+  window.electronAPI.setCurrentTheme(name);
+  setTheme(theme);
+}
+
 watch(currentTab, (x, y) => {
   console.log('HERE:', x);
   resetEditor.value = !resetEditor.value;
+});
+
+window.addEventListener('keyup', (key) => {
+  if (key.key === ',' && key.ctrlKey) {
+    showModal.value = true;
+  }
 });
 
 function changeUnsaved(id, value) {

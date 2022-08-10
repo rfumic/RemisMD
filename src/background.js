@@ -10,7 +10,13 @@ import {
 } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
-import { getTheme, getAllThemes, getCurrentTheme } from '@/settings';
+import {
+  getTheme,
+  getAllThemes,
+  getCurrentTheme,
+  openSettingsFile,
+  setCurrentTheme,
+} from '@/settings';
 const path = require('path');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -81,8 +87,20 @@ async function createWindow() {
     win.webContents.redo();
   });
 
+  ipcMain.on('openConfig', async () => {
+    openSettingsFile();
+  });
+
+  ipcMain.on('setCurrentTheme', async (event, themeName) => {
+    console.log('hi from backgronud.js ', themeName);
+    setCurrentTheme(themeName);
+  });
+
   ipcMain.handle('getCurrentTheme', () => {
     return getCurrentTheme();
+  });
+  ipcMain.handle('getAllThemes', () => {
+    return getAllThemes();
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

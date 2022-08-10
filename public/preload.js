@@ -8,5 +8,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   zoomOut: () => ipcRenderer.send('zoomOut'),
   undo: () => ipcRenderer.send('undo'),
   redo: () => ipcRenderer.send('redo'),
+  openConfig: () => ipcRenderer.send('openConfig'),
+  setCurrentTheme: (themeName) => {
+    ipcRenderer.send('setCurrentTheme', themeName);
+  },
   getCurrentTheme: () => ipcRenderer.invoke('getCurrentTheme'),
+  getAllThemes: () => ipcRenderer.invoke('getAllThemes'),
 });

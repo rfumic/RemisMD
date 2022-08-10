@@ -57,4 +57,20 @@ function getCurrentTheme() {
   // return storage.get(`data.themes.${themeName}`);
 }
 
-export { getAllThemes, getTheme, getCurrentTheme };
+function setCurrentTheme(themeName) {
+  checkStorage();
+  storage.set('data.settings.currentTheme', themeName);
+}
+
+function openSettingsFile() {
+  checkStorage();
+  storage.openInEditor();
+}
+
+export {
+  getAllThemes,
+  getTheme,
+  getCurrentTheme,
+  openSettingsFile,
+  setCurrentTheme,
+};

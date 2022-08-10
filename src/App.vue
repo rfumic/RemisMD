@@ -1,24 +1,10 @@
 <template>
-  <router-view> </router-view>
+  <!-- <router-view> </router-view> -->
+  <HomeView />
 </template>
 
 <script setup>
-function setTheme(theme) {
-  const root = document.querySelector(':root');
-  root.style.setProperty('--background', theme.background);
-  root.style.setProperty('--editor', theme.editor);
-  root.style.setProperty('--foreground', theme.foreground);
-  root.style.setProperty('--highlight', theme.highlight);
-  root.style.setProperty('--textActive', theme.textActive);
-  root.style.setProperty('--textArea', theme.textArea);
-  root.style.setProperty('--textAreaBorder', theme.textAreaBorder);
-  root.style.setProperty('--textInactive', theme.textInactive);
-}
-(async () => {
-  let currentTheme = await window.electronAPI.getCurrentTheme();
-  setTheme(currentTheme);
-  console.log('hi from APP.VUE', currentTheme);
-})();
+import HomeView from './views/HomeView.vue';
 </script>
 <style lang="scss">
 @use '@/scss/colors.scss' as *;
@@ -31,6 +17,7 @@ function setTheme(theme) {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
 }
 body {
   overflow: hidden;
@@ -38,7 +25,7 @@ body {
 #app {
   width: 100vw;
   height: 100vh;
-  font-family: 'Roboto', sans-serif;
+
   background-color: $c-background;
 }
 </style>
