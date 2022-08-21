@@ -122,7 +122,7 @@ main {
   }
   &::-webkit-scrollbar-thumb {
     background-color: $c-editor;
-    box-shadow: inset 0 0 4px black;
+    box-shadow: inset 0 0 2px black;
 
     opacity: 0;
     &:hover {

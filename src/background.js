@@ -7,6 +7,7 @@ import {
   ipcMain,
   shell,
   webFrame,
+  nativeTheme,
 } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
@@ -16,6 +17,9 @@ import {
   getCurrentTheme,
   openSettingsFile,
   setCurrentTheme,
+  windowSettings,
+  getAllSettings,
+  updateSettings,
 } from '@/settings';
 const path = require('path');
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -27,12 +31,13 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 async function createWindow() {
+  const bounds = windowSettings.getBounds();
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 640,
-    height: 720,
-    minWidth: 640,
-    minHeight: 720,
+    width: bounds[0],
+    height: bounds[1],
+    // minWidth: 640,
+    // minHeight: 720,
     frame: false,
     autoHideMenuBar: true,
     backgroundColor: '#141519',
@@ -45,6 +50,8 @@ async function createWindow() {
       preload: path.resolve(__static, 'preload.js'),
     },
   });
+
+  win.on('resized', () => windowSettings.setBounds(win.getSize(), true));
 
   win.webContents.on('will-navigate', (event, url) => {
     // stop Electron from opening another BrowserWindow
@@ -92,8 +99,10 @@ async function createWindow() {
   });
 
   ipcMain.on('setCurrentTheme', async (event, themeName) => {
-    console.log('hi from backgronud.js ', themeName);
     setCurrentTheme(themeName);
+  });
+  ipcMain.on('updateSettings', async (event, args) => {
+    updateSettings(args);
   });
 
   ipcMain.handle('getCurrentTheme', () => {
@@ -101,6 +110,9 @@ async function createWindow() {
   });
   ipcMain.handle('getAllThemes', () => {
     return getAllThemes();
+  });
+  ipcMain.handle('getAllSettings', () => {
+    return getAllSettings();
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

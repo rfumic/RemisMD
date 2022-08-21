@@ -12,6 +12,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setCurrentTheme: (themeName) => {
     ipcRenderer.send('setCurrentTheme', themeName);
   },
+  updateSettings: (setting, value) => {
+    ipcRenderer.send('updateSettings', { setting, value });
+  },
   getCurrentTheme: () => ipcRenderer.invoke('getCurrentTheme'),
   getAllThemes: () => ipcRenderer.invoke('getAllThemes'),
+  getAllSettings: () => ipcRenderer.invoke('getAllSettings'),
 });

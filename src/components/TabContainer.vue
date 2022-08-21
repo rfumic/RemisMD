@@ -58,13 +58,13 @@ const props = defineProps(['tabs', 'currentTab', 'saving']);
 }
 .empty {
   flex-grow: 1;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid rgba($color: #000000, $alpha: 0.2);
 }
 .tabElement {
   display: flex;
   align-items: center;
   padding: 1em;
-  border: 1px solid black;
+  border: 1px solid rgba($color: #000000, $alpha: 0.2);
   border-top-left-radius: 0.5em;
   border-top-right-radius: 0.5em;
   color: $c-tab-title-active;

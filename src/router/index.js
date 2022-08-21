@@ -7,6 +7,10 @@ const routes = [
     name: 'home',
     component: HomeView,
   },
+  {
+    path: '/:route',
+    component: HomeView,
+  },
   // {
   //   path: '/about',
   //   name: 'about',
@@ -21,5 +25,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
-
+router.beforeEach((from, to, next) => {
+  next(false);
+});
 export default router;

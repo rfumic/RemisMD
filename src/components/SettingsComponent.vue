@@ -1,5 +1,5 @@
 <template>
-  <div class="bg">
+  <div class="bg" v-if="loaded">
     <div class="modal">
       <h1>Settings</h1>
       <h2>Theme</h2>
@@ -18,6 +18,20 @@
           {{ name }}
         </div>
       </div>
+      <h2>Window settings</h2>
+      <div class="windowSettings">
+        <label class="form-control">
+          <input
+            type="checkbox"
+            name="checkbox"
+            :checked="settings.rememberWindowSize"
+            @click="
+              updateSettings('rememberWindowSize', !settings.rememberWindowSize)
+            "
+          />
+          Remember window size
+        </label>
+      </div>
       <a class="openConfig" @click="openConfig" title="Create custom themes"
         >Open config.json</a
       >
@@ -29,9 +43,10 @@
 </template>
 <script setup>
 import { onMounted, ref } from 'vue';
-let allThemes = ref(null);
+let allThemes = ref([]);
 let currentTheme = ref(null);
-
+let settings = ref(true);
+let loaded = ref(false);
 async function getCurrentTheme() {
   currentTheme.value = await window.electronAPI.getCurrentTheme();
 }
@@ -39,7 +54,22 @@ async function getCurrentTheme() {
 async function setAll() {
   try {
     allThemes.value = await window.electronAPI.getAllThemes();
+    settings.value = await window.electronAPI.getAllSettings();
+    console.log('these are the settings', settings.value);
     await getCurrentTheme();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function openConfig() {
+  window.electronAPI.openConfig();
+}
+
+async function updateSettings(setting, value) {
+  try {
+    await window.electronAPI.updateSettings(setting, value);
+    await setAll();
   } catch (error) {
     console.error(error);
   }
@@ -47,10 +77,8 @@ async function setAll() {
 
 onMounted(async () => {
   await setAll();
+  loaded.value = true;
 });
-function openConfig() {
-  window.electronAPI.openConfig();
-}
 </script>
 <style lang="scss" scoped>
 @use '@/scss/colors.scss' as *;
@@ -82,7 +110,7 @@ function openConfig() {
   padding: 10px;
   margin: 10px;
   width: 100%;
-  text-align: right;
+  // text-align: right;
   min-height: 5vh;
   max-height: 15vh;
   overflow: auto;
@@ -127,6 +155,38 @@ button {
   &:hover {
     border: 1px solid var(--foreground);
     color: var(--foreground);
+  }
+}
+
+.form-control {
+  line-height: 1.1;
+  display: grid;
+  grid-template-columns: 1em auto;
+  gap: 0.5em;
+  margin: 10px;
+  font-size: 1.15rem;
+}
+
+input[type='checkbox'] {
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid currentColor;
+  border-radius: 0.15em;
+  transform: translateY(-0.075em);
+
+  display: grid;
+  place-content: center;
+
+  &:checked {
+    content: '';
+    width: 0.65em;
+    height: 0.65em;
+    box-shadow: inset 1em 1em var(--highlight);
+    transform: scale(1);
   }
 }
 </style>

@@ -20,11 +20,13 @@ const schema = {
       textInactive: '#8B99B1',
       textArea: '#ECF2F3',
       textAreaBorder: '#DCEDF0',
-      highlight: '##DA7A61',
+      highlight: '#DA7A61',
     },
   },
   settings: {
     currentTheme: 'defaultDark',
+    rememberWindowSize: true,
+    windowBounds: [800, 800],
   },
 };
 
@@ -36,6 +38,18 @@ function checkStorage() {
     storage.set('data', schema);
   }
 }
+const windowSettings = {
+  getBounds: () => {
+    checkStorage();
+    return storage.get('data.settings.windowBounds');
+  },
+  setBounds: (bounds, isFromResize) => {
+    const setting = storage.get('data.settings.rememberWindowSize');
+    if (setting || !isFromResize) {
+      storage.set('data.settings.windowBounds', bounds);
+    }
+  },
+};
 
 function getAllThemes() {
   checkStorage();
@@ -67,10 +81,21 @@ function openSettingsFile() {
   storage.openInEditor();
 }
 
+function getAllSettings() {
+  return storage.get('data.settings');
+}
+
+function updateSettings({ setting, value }) {
+  storage.set(`data.settings.${setting}`, value);
+}
+
 export {
   getAllThemes,
   getTheme,
   getCurrentTheme,
   openSettingsFile,
   setCurrentTheme,
+  windowSettings,
+  getAllSettings,
+  updateSettings,
 };
