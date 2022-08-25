@@ -36,6 +36,7 @@ import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { marked } from 'marked';
 import TurndownService from 'turndown';
+import { gfm } from 'joplin-turndown-plugin-gfm';
 
 import DefaultScreen from '@/components/DefaultScreen.vue';
 import EditorComponent from '@/components/EditorComponent.vue';
@@ -56,6 +57,16 @@ const files = ref([
 ]);
 const resetEditor = ref(false);
 let fileHandle;
+
+window.addEventListener('keyup', (key) => {
+  console.log(key);
+  if ((key.key === 'n' || key.key === 'N') && key.ctrlKey) {
+    handleNewFile();
+  }
+  if ((key.key === 'o' || key.key === 'O') && key.ctrlKey) {
+    handleOpenFile();
+  }
+});
 
 function setTheme(theme) {
   const root = document.querySelector(':root');
@@ -225,6 +236,7 @@ function parseFile(fileContent) {
     headingStyle: 'atx',
     codeBlockStyle: 'fenced',
   });
+  td.use(gfm);
   const initialHtml = marked.parse(fileContent);
 
   const doc = new DOMParser().parseFromString(initialHtml, 'text/html');

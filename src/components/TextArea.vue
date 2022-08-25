@@ -187,4 +187,21 @@ a {
   color: $c-highlight;
   font-weight: bolder;
 }
+
+table {
+  border: 1px solid $c-foreground;
+  border-collapse: collapse;
+}
+tr,
+td,
+th {
+  margin: 1px;
+  padding: 8px;
+  border: 1px solid $c-foreground;
+}
+th {
+  background-color: $c-foreground;
+  color: $c-background;
+  border: 1px dotted $c-background;
+}
 </style>

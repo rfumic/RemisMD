@@ -2,7 +2,7 @@
   <div class="container">
     <div class="menu">
       <div>~</div>
-      <div class="menu-item" title="New File">
+      <div class="menu-item" title="New File (Ctrl + N)">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -24,7 +24,7 @@
           <line x1="9" y1="15" x2="15" y2="15"></line>
         </svg>
       </div>
-      <div class="menu-item" title="Open File">
+      <div class="menu-item" title="Open File (Ctrl + O)">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -44,7 +44,7 @@
           <polyline points="13 2 13 9 20 9"></polyline>
         </svg>
       </div>
-      <div class="menu-item" title="Save">
+      <div class="menu-item" title="Save (Ctrl + S)">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -66,7 +66,7 @@
         </svg>
       </div>
       <!-- <div class="menu-item" title="Save as">Save As</div> -->
-      <div class="menu-item" title="Undo">
+      <div class="menu-item" title="Undo (Ctrl + Z)">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -84,7 +84,7 @@
           <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
         </svg>
       </div>
-      <div class="menu-item" title="Redo">
+      <div class="menu-item" title="Redo (Ctrl + Y)">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -141,7 +141,7 @@
           <line x1="8" y1="11" x2="14" y2="11"></line>
         </svg>
       </div>
-      <div class="menu-item" title="Settings">
+      <div class="menu-item" title="Settings (Ctrl + , )">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
