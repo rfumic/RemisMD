@@ -8,6 +8,7 @@ import {
   shell,
   webFrame,
   nativeTheme,
+  dialog,
 } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
@@ -22,6 +23,7 @@ import {
   updateSettings,
 } from '@/settings';
 const path = require('path');
+const fs = require('fs');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // const ipc = ipcMain;
@@ -103,6 +105,32 @@ async function createWindow() {
   });
   ipcMain.on('updateSettings', async (event, args) => {
     updateSettings(args);
+  });
+
+  ipcMain.handle('openFile', () => {
+    const [file] = dialog.showOpenDialogSync(win, {
+      properties: ['openFile'],
+      filters: [{ name: 'Markdown', extensions: ['md', 'markdown'] }],
+      title: 'Open a file',
+    });
+    if (file) {
+      // const content = fs.readFileSync(file).toString();
+      // const name = path.basename(file);
+      return [path.basename(file), fs.readFileSync(file).toString(), file];
+    }
+  });
+
+  ipcMain.handle('saveFile', async (event, data) => {
+    let file = data;
+    if (file.path === undefined) {
+      file.path = dialog.showSaveDialogSync(win, {
+        title: 'Save file',
+        filters: [{ name: 'Markdown', extensions: ['md', 'markdown'] }],
+      });
+    }
+
+    fs.writeFileSync(file.path, file.content);
+    return [path.basename(file.path), file.content, file.path];
   });
 
   ipcMain.handle('getCurrentTheme', () => {

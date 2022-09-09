@@ -15,6 +15,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateSettings: (setting, value) => {
     ipcRenderer.send('updateSettings', { setting, value });
   },
+  openFile: () => ipcRenderer.invoke('openFile'),
+  saveFile: (data) => ipcRenderer.invoke('saveFile', data),
   getCurrentTheme: () => ipcRenderer.invoke('getCurrentTheme'),
   getAllThemes: () => ipcRenderer.invoke('getAllThemes'),
   getAllSettings: () => ipcRenderer.invoke('getAllSettings'),

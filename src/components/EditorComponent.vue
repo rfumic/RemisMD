@@ -31,7 +31,11 @@ window.addEventListener('keyup', (key) => {
   if (key.key === 'Escape') {
     selectedLine.value = null;
   } else if ((key.key === 's' || key.key === 'S') && key.ctrlKey) {
-    emit('saveFile');
+    if (key.shiftKey) {
+      emit('saveAs');
+    } else {
+      emit('saveFile');
+    }
   } else if (key.key === 'ArrowDown' && key.ctrlKey) {
     selectedLine.value += 1;
   } else if (key.key === 'ArrowUp' && key.ctrlKey) {
@@ -63,16 +67,18 @@ watch(
 watch(
   () => props.file,
   () => {
-    fileContent.value = store.getters.getFile(props.file.id).content;
+    // fileContent.value = store.getters.getFile(props.file.id).content;
+    fileContent.value = props.file.content;
   }
 );
 
-watch(fileContent.value, () => {
+watch(fileContent, () => {
   console.log('preemit');
   store.commit('updateFileContent', {
     ...props.file,
     content: fileContent.value,
   });
+  console.log('this does run', props.file.id);
   emit('changeUnsaved', props.file.id, true);
 });
 

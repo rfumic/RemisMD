@@ -19,6 +19,7 @@
     :file="currentTab"
     :reset="resetEditor"
     @save-file="handleSaveFile"
+    @save-as="handleSaveAs"
     @changeUnsaved="changeUnsaved"
   />
   <default-screen @open-file="handleOpenFile" @new-file="handleNewFile" />
@@ -56,7 +57,6 @@ const files = ref([
   // { id: 4, title: 'File4.md' },
 ]);
 const resetEditor = ref(false);
-let fileHandle;
 
 window.addEventListener('keyup', (key) => {
   console.log(key);
@@ -104,14 +104,21 @@ window.addEventListener('keyup', (key) => {
 
 function changeUnsaved(id, value) {
   console.log('itran', id, value);
-  files.value = files.value.map((file) => {
+  // files.value = files.value.map((file) => {
+  //   if (file.id === id) {
+  //     return {
+  //       ...file,
+  //       unsaved: value,
+  //     };
+  //   }
+  // });
+  for (let file of files.value) {
     if (file.id === id) {
-      return {
-        ...file,
-        unsaved: value,
-      };
+      file.unsaved = value;
+      console.log('this here:', file);
+      return;
     }
-  });
+  }
 }
 
 function setCurrentTab(tabId) {
@@ -129,25 +136,12 @@ function closeTab(payload) {
 
 async function handleOpenFile() {
   try {
-    [fileHandle] = await window.showOpenFilePicker({
-      types: [
-        {
-          description: 'Markdown',
-          accept: {
-            'markdown/*': ['.MD', '.markdown'],
-          },
-        },
-      ],
-      excludeAcceptAllOption: true,
-      multiple: false,
-    });
-    let fileData = await fileHandle.getFile();
-    let content = await fileData.text();
+    let [name, content, path] = await window.electronAPI.openFile();
     let data = {
       id: Date.now(),
-      name: fileData.name,
+      name,
       content: parseFile(content),
-      fileHandle,
+      path,
       unsaved: false,
     };
     files.value.push(data);
@@ -162,15 +156,43 @@ async function handleOpenFile() {
 }
 
 async function handleSaveFile() {
+  // const file = currentTab.value;
+  const file = store.getters.getFile(currentTab.value.id);
   try {
-    changeUnsaved(currentTab.value.id, false);
+    changeUnsaved(file.id, false);
     saving.value = true;
-    const file = store.getters.getFile(currentTab.value.id);
-    await file.fileHandle.requestPermission();
-    let stream = await file.fileHandle.createWritable();
-    await stream.write({ data: file.content.join('\r\n\n'), type: 'write' });
-    await stream.close();
+
+    let [name, content, path] = await window.electronAPI.saveFile({
+      path: file.path,
+      content: file.content.join('\r\n\n'),
+    });
+    // const fileIndex = files.value.indexOf((f) => f.id === file.id);
+    // files.value[fileIndex] = { ...files.value[fileIndex], name, content, path };
+    // currentTab.value = files.value[fileIndex];
     saving.value = false;
+    return [name, content, path];
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function handleSaveAs() {
+  const file = store.getters.getFile(currentTab.value.id);
+  try {
+    let [name, content, path] = await window.electronAPI.saveFile({
+      path: undefined,
+      content: file.content.join('\r\n\n'),
+    });
+    let data = {
+      name,
+      content: parseFile(content),
+      path,
+      id: Date.now(),
+      unsaved: false,
+    };
+    files.value.push(data);
+    store.commit('addFile', data);
+    currentTab.value = files.value[files.value.length - 1];
   } catch (error) {
     console.error(error);
   }
@@ -178,57 +200,25 @@ async function handleSaveFile() {
 
 async function handleNewFile() {
   try {
-    fileHandle = await window.showSaveFilePicker({
-      types: [
-        {
-          description: 'Markdown',
-          accept: {
-            'markdown/*': ['.MD', '.markdown'],
-          },
-        },
-      ],
-      excludeAcceptAllOption: true,
-    });
-    let fileData = await fileHandle.getFile();
     let data = {
       id: Date.now(),
-      name: fileData.name,
+      name: '𝘶𝘯𝘵𝘪𝘵𝘭𝘦𝘥',
       content: [],
-      fileHandle,
+      path: undefined,
       unsaved: true,
     };
 
     files.value.push(data);
     store.commit('addFile', data);
     currentTab.value = files.value[files.value.length - 1];
-    let stream = await fileHandle.createWritable();
-    await stream.write({ data: '', type: 'write' });
-    await stream.close();
+    // let stream = await fileHandle.createWritable();
+    // await stream.write({ data: '', type: 'write' });
+    // await stream.close();
   } catch (error) {
     if (error.name !== 'AbortError') {
       console.error(error);
     }
   }
-}
-
-async function verifyPermission(fileHandle, withWrite) {
-  const opts = {};
-  if (withWrite) {
-    opts.mode = 'readwrite';
-  }
-
-  // Check if we already have permission, if so, return true.
-  if ((await fileHandle.queryPermission(opts)) === 'granted') {
-    return true;
-  }
-
-  // Request permission to the file, if the user grants permission, return true.
-  if ((await fileHandle.requestPermission(opts)) === 'granted') {
-    return true;
-  }
-
-  // The user did not grant permission, return false.
-  return false;
 }
 
 function parseFile(fileContent) {
