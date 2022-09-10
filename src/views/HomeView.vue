@@ -81,17 +81,29 @@ function setTheme(theme) {
 (async () => {
   let currentTheme = await window.electronAPI.getCurrentTheme();
   setTheme(currentTheme);
-  console.log('hi from APP.VUE', currentTheme);
+  let argFiles = await window.electronAPI.openWith();
+  if (argFiles !== undefined) {
+    argFiles.forEach((f) => {
+      let data = {
+        id: Date.now(),
+        name: f.name,
+        content: parseFile(f.content),
+        path: f.path,
+        unsaved: false,
+      };
+      files.value.push(data);
+      store.commit('addFile', { ...data });
+    });
+    currentTab.value = files.value[files.value.length - 1];
+  }
 })();
 
 function setCurrentTheme([theme, name]) {
-  console.log('hello from homeview.vue', name);
   window.electronAPI.setCurrentTheme(name);
   setTheme(theme);
 }
 
 watch(currentTab, (x, y) => {
-  console.log('HERE:', x);
   resetEditor.value = !resetEditor.value;
 });
 
@@ -102,15 +114,6 @@ window.addEventListener('keyup', (key) => {
 });
 
 function changeUnsaved(id, value) {
-  console.log('itran', id, value);
-  // files.value = files.value.map((file) => {
-  //   if (file.id === id) {
-  //     return {
-  //       ...file,
-  //       unsaved: value,
-  //     };
-  //   }
-  // });
   for (let file of files.value) {
     if (file.id === id) {
       file.unsaved = value;
@@ -122,7 +125,6 @@ function changeUnsaved(id, value) {
 
 function setCurrentTab(tabId) {
   currentTab.value = files.value.find((file) => file.id === tabId);
-  console.log('this is the tab id:', tabId);
 }
 
 function closeTab(payload) {
@@ -145,7 +147,6 @@ async function handleOpenFile() {
     };
     files.value.push(data);
     store.commit('addFile', { ...data });
-    console.log(files.value[files.value.length - 1]);
     currentTab.value = files.value[files.value.length - 1];
   } catch (error) {
     if (error.name !== 'AbortError') {

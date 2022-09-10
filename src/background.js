@@ -107,6 +107,22 @@ async function createWindow() {
     updateSettings(args);
   });
 
+  ipcMain.handle('openWith', () => {
+    if (app.isPackaged) {
+      process.argv.unshift(null);
+    }
+    if (process.argv.length > 2) {
+      let data = process.argv.slice(2).map((f) => {
+        return {
+          name: path.basename(f),
+          content: fs.readFileSync(f).toString(),
+          path: f,
+        };
+      });
+      return data;
+    }
+  });
+
   ipcMain.handle('openFile', () => {
     const [file] = dialog.showOpenDialogSync(win, {
       properties: ['openFile'],
