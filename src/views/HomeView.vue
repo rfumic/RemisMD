@@ -59,7 +59,6 @@ const files = ref([
 const resetEditor = ref(false);
 
 window.addEventListener('keyup', (key) => {
-  console.log(key);
   if ((key.key === 'n' || key.key === 'N') && key.ctrlKey) {
     handleNewFile();
   }
@@ -145,7 +144,7 @@ async function handleOpenFile() {
       unsaved: false,
     };
     files.value.push(data);
-    store.commit('addFile', data);
+    store.commit('addFile', { ...data });
     console.log(files.value[files.value.length - 1]);
     currentTab.value = files.value[files.value.length - 1];
   } catch (error) {

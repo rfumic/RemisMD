@@ -11,7 +11,8 @@ export default createStore({
   },
   mutations: {
     addFile(state, payload) {
-      state.openFiles.push(payload);
+      state.openFiles.push({ ...payload });
+      console.log('hello from addfile', typeof state.openFiles[0]);
     },
     removeFile(state, payload) {
       state.openFiles = state.openFiles.filter(
@@ -19,6 +20,7 @@ export default createStore({
       );
     },
     updateFileContent(state, payload) {
+      console.log('hello from vuex', typeof payload);
       state.openFiles.map((file) => {
         if (file.id === payload.id) {
           return payload;

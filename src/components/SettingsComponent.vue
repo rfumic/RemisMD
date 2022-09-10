@@ -183,10 +183,7 @@ input[type='checkbox'] {
 
   &:checked {
     content: '';
-    width: 0.65em;
-    height: 0.65em;
-    box-shadow: inset 1em 1em var(--highlight);
-    transform: scale(1);
+    background-color: var(--highlight);
   }
 }
 </style>

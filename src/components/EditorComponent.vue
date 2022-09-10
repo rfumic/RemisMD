@@ -25,9 +25,9 @@ const emit = defineEmits(['saveFile', 'saveAs', 'changeUnsaved']);
 const selectedLine = ref(null);
 const fileContent = ref(props.file.content);
 const store = useStore();
+let previous = null;
 
 window.addEventListener('keyup', (key) => {
-  console.log(key);
   if (key.key === 'Escape') {
     selectedLine.value = null;
   } else if ((key.key === 's' || key.key === 'S') && key.ctrlKey) {
@@ -69,18 +69,20 @@ watch(
   () => {
     // fileContent.value = store.getters.getFile(props.file.id).content;
     fileContent.value = props.file.content;
+    console.log('the watcher runs', props.file.content);
   }
 );
 
-watch(fileContent, () => {
-  console.log('preemit');
-  store.commit('updateFileContent', {
-    ...props.file,
-    content: fileContent.value,
-  });
-  console.log('this does run', props.file.id);
-  emit('changeUnsaved', props.file.id, true);
-});
+watch(
+  fileContent,
+  () => {
+    if (previous == props.file.id) {
+      emit('changeUnsaved', props.file.id, true);
+    }
+    previous = props.file.id;
+  },
+  { deep: true }
+);
 
 function addLine(index = null) {
   if (index === null) {
@@ -96,10 +98,6 @@ function removeLine(index) {
   fileContent.value.splice(index, 1);
   selectedLine.value = null;
 }
-
-// const fileContent = computed(() => props.file.content.split(/\r?\n/));
-
-// console.log(props.file.content);
 </script>
 
 <style lang="scss" scoped>
