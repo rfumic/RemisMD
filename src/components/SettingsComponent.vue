@@ -4,7 +4,6 @@
       <h1>Settings</h1>
       <h2>Theme</h2>
       <div class="selectTheme">
-        <!-- <div class="theme selectedTheme">DefaultDark</div> -->
         <div
           class="theme"
           v-for="(theme, name) in allThemes"
@@ -47,6 +46,7 @@ let allThemes = ref([]);
 let currentTheme = ref(null);
 let settings = ref(true);
 let loaded = ref(false);
+
 async function getCurrentTheme() {
   currentTheme.value = await window.electronAPI.getCurrentTheme();
 }
@@ -55,7 +55,6 @@ async function setAll() {
   try {
     allThemes.value = await window.electronAPI.getAllThemes();
     settings.value = await window.electronAPI.getAllSettings();
-    console.log('these are the settings', settings.value);
     await getCurrentTheme();
   } catch (error) {
     console.error(error);
@@ -110,7 +109,6 @@ onMounted(async () => {
   padding: 10px;
   margin: 10px;
   width: 100%;
-  // text-align: right;
   min-height: 5vh;
   max-height: 15vh;
   overflow: auto;

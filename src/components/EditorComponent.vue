@@ -18,13 +18,11 @@
 
 <script setup>
 import TextArea from '@/components/TextArea.vue';
-import { ref, computed, watch } from 'vue';
-import { useStore } from 'vuex';
+import { ref, watch } from 'vue';
 const props = defineProps(['file', 'reset']);
 const emit = defineEmits(['saveFile', 'saveAs', 'changeUnsaved']);
 const selectedLine = ref(null);
 const fileContent = ref(props.file.content);
-const store = useStore();
 let previous = null;
 
 window.addEventListener('keyup', (key) => {
@@ -67,9 +65,7 @@ watch(
 watch(
   () => props.file,
   () => {
-    // fileContent.value = store.getters.getFile(props.file.id).content;
     fileContent.value = props.file.content;
-    console.log('the watcher runs', props.file.content);
   }
 );
 
@@ -112,7 +108,6 @@ main {
     margin-top: 10px;
     margin-bottom: 10px;
   }
-  // overflow-x: hidden;
   overflow: scroll;
   &::-webkit-scrollbar {
     width: 24px;

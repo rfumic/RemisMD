@@ -53,7 +53,6 @@
   height: 50%;
   align-items: center;
   justify-content: center;
-  //   background-color: green;
   color: $c-tab-title-inactive;
 }
 

@@ -1,5 +1,4 @@
 <template>
-  <!-- <router-view> </router-view> -->
   <HomeView />
 </template>
 
@@ -10,9 +9,6 @@ import HomeView from './views/HomeView.vue';
 @use '@/scss/colors.scss' as *;
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
-:root {
-  --testColor: pink;
-}
 * {
   margin: 0;
   padding: 0;

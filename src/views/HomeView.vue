@@ -50,12 +50,7 @@ const saving = ref(false);
 const showEditor = computed(() => files.value.length !== 0);
 const currentTab = ref({ name: 'Open a file' });
 const showModal = ref(false);
-const files = ref([
-  // { id: 1, title: 'File1sdfsdf.md' },
-  // { id: 2, title: 'File2.md' },
-  // { id: 3, title: 'File3.md' },
-  // { id: 4, title: 'File4.md' },
-]);
+const files = ref([]);
 const resetEditor = ref(false);
 
 window.addEventListener('keyup', (key) => {
@@ -117,7 +112,6 @@ function changeUnsaved(id, value) {
   for (let file of files.value) {
     if (file.id === id) {
       file.unsaved = value;
-      console.log('this here:', file);
       return;
     }
   }
@@ -156,7 +150,6 @@ async function handleOpenFile() {
 }
 
 async function handleSaveFile() {
-  // const file = currentTab.value;
   const file = store.getters.getFile(currentTab.value.id);
   try {
     changeUnsaved(file.id, false);
@@ -166,9 +159,7 @@ async function handleSaveFile() {
       path: file.path,
       content: file.content.join('\r\n\n'),
     });
-    // const fileIndex = files.value.indexOf((f) => f.id === file.id);
-    // files.value[fileIndex] = { ...files.value[fileIndex], name, content, path };
-    // currentTab.value = files.value[fileIndex];
+
     saving.value = false;
     return [name, content, path];
   } catch (error) {
@@ -211,9 +202,6 @@ async function handleNewFile() {
     files.value.push(data);
     store.commit('addFile', data);
     currentTab.value = files.value[files.value.length - 1];
-    // let stream = await fileHandle.createWritable();
-    // await stream.write({ data: '', type: 'write' });
-    // await stream.close();
   } catch (error) {
     if (error.name !== 'AbortError') {
       console.error(error);

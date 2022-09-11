@@ -1,15 +1,6 @@
 'use strict';
 
-import {
-  app,
-  protocol,
-  BrowserWindow,
-  ipcMain,
-  shell,
-  webFrame,
-  nativeTheme,
-  dialog,
-} from 'electron';
+import { app, protocol, BrowserWindow, ipcMain, shell, dialog } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
 import {
@@ -26,7 +17,6 @@ const path = require('path');
 const fs = require('fs');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-// const ipc = ipcMain;
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
@@ -63,17 +53,14 @@ async function createWindow() {
   });
 
   ipcMain.on('closeApp', () => {
-    console.log('closing app');
     win.close();
   });
 
   ipcMain.on('minimizeApp', () => {
-    console.log('minimizing app');
     win.minimize();
   });
 
   ipcMain.on('maximizeApp', () => {
-    console.log('maxzimizing app');
     if (win.isMaximized()) {
       win.restore();
     } else {
@@ -130,8 +117,6 @@ async function createWindow() {
       title: 'Open a file',
     });
     if (file) {
-      // const content = fs.readFileSync(file).toString();
-      // const name = path.basename(file);
       return [path.basename(file), fs.readFileSync(file).toString(), file];
     }
   });

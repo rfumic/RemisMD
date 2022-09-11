@@ -1,7 +1,6 @@
 <template>
   <div class="container">
     <div class="menu">
-      <div>~</div>
       <div class="menu-item" title="New File (Ctrl + N)">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +64,6 @@
           <polyline points="7 3 7 8 15 8"></polyline>
         </svg>
       </div>
-      <!-- <div class="menu-item" title="Save as">Save As</div> -->
       <div class="menu-item" title="Undo (Ctrl + Z)">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -162,7 +160,7 @@
         </svg>
       </div>
     </div>
-    <div class="title">{{ props.windowTitle }} - markdown-editor</div>
+    <div class="title">{{ props.windowTitle }} - RemisMD</div>
     <div class="windowControls">
       <div @click="handleControl('minimize')" title="Minimize">
         <svg
@@ -217,11 +215,8 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
-let openFile = ref({});
+import { ref, watch } from 'vue';
 const props = defineProps(['windowTitle']);
-
-// const title = computed(() => props.windowTitle);
 
 function handleControl(control) {
   switch (control) {
@@ -248,26 +243,6 @@ function handleControl(control) {
       window.electronAPI.redo();
       break;
   }
-}
-async function handleFileUpload() {
-  let [fileHandle] = await window.showOpenFilePicker({
-    types: [
-      {
-        description: 'Markdown',
-        accept: {
-          'markdown/*': ['.MD', '.markdown'],
-        },
-      },
-    ],
-    excludeAcceptAllOption: true,
-    multiple: false,
-  });
-  let fileData = await fileHandle.getFile();
-  openFile.value.content = await fileData.text();
-  openFile.value.name = fileData.name;
-  console.log(openFile.value.content);
-  console.log(openFile.value.name);
-  console.log(fileData);
 }
 
 watch(

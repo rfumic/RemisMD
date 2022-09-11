@@ -68,7 +68,6 @@ function getCurrentTheme() {
     theme: themeName,
     ...storage.get(`data.themes.${themeName}`),
   };
-  // return storage.get(`data.themes.${themeName}`);
 }
 
 function setCurrentTheme(themeName) {

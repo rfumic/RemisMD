@@ -98,7 +98,7 @@
   ></div>
 </template>
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { marked } from 'marked';
 const props = defineProps(['line', 'isSelected', 'modelValue']);
 
@@ -106,7 +106,6 @@ const renderLine = computed(() => marked.parse(lineValue.value));
 const rowNumber = computed(() => lineValue.value.split(/\r\n|\r|\n/).length);
 let lineValue = ref(props.line);
 
-let textArea = ref('');
 let controlTextArea = ref(null);
 let editMode = computed(() => props.isSelected);
 
@@ -116,18 +115,11 @@ watch(
     lineValue.value = newValue;
   }
 );
-
-function resizeTextArea() {
-  controlTextArea.value.style.height = '5px';
-  controlTextArea.value.style.height =
-    controlTextArea.value.scrollHeight + 'px';
-}
 </script>
 <style lang="scss">
 @use '@/scss/colors.scss' as *;
 textarea {
   width: 100%;
-  // height: fit-content;
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   padding: 16px 8px;
@@ -141,7 +133,6 @@ textarea {
 .textAreaControl {
   width: 100%;
   height: 50px;
-  // background-color: blue;
   display: flex;
   align-items: center;
   p,

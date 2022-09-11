@@ -38,9 +38,7 @@
   </div>
 </template>
 <script setup>
-import { ref, toRefs } from 'vue';
 const props = defineProps(['tabs', 'currentTab', 'saving']);
-// const { tabs } = toRefs(props);
 </script>
 <style lang="scss" scoped>
 @use '@/scss/colors.scss' as *;

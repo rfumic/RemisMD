@@ -1,7 +1,9 @@
 {
-  "name": "markdown-editor",
+  "name": "remis-md",
   "version": "0.1.0",
   "private": true,
+  "author": "Roko Fumić",
+  "description": "A markdown editor",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
