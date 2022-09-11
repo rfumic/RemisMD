@@ -4,6 +4,7 @@ module.exports = defineConfig({
   pluginOptions: {
     electronBuilder: {
       builderOptions: {
+        publish: ['github'],
         // options placed here will be merged with default configuration and passed to electron-builder
         appId: 'com.rfumic.RemisMD',
         productName: 'RemisMD',
